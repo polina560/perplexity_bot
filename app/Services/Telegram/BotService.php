@@ -2,8 +2,11 @@
 
 namespace App\Services\Telegram;
 
+use App\Models\TelegramUser;
+use App\Services\GenApiService;
 use Illuminate\Container\Attributes\Singleton;
 use Longman\TelegramBot\Exception\TelegramException;
+use Longman\TelegramBot\Request;
 use Longman\TelegramBot\Telegram;
 
 #[Singleton]
@@ -36,4 +39,19 @@ class BotService
         return $this->telegram;
     }
 
+    public function newPost()
+    {
+        $text = app(GenApiService::class)->perplexityRequest();
+        TelegramUser::each(function (TelegramUser $telegramUser) use ($text){
+            Request::sendMessage([
+                'chat_id' => $telegramUser->chat_id,
+                'text' => $text,
+                'parse_mode' => 'MarkdownV2',
+            ]);
+        });
+
+        return Request::answerCallbackQuery([
+            'show_alert' => false,
+        ]);
+    }
 }

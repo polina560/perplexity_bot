@@ -31,16 +31,16 @@ class AdditionalCommand extends UserCommand
             'text' => 'Подождите 15 секунд',
         ]);
 
-//        $text = app(GenApiService::class)->perplexityRequest();
-        $content = Prompt::where('systemname', 'main')->firstOrFail();
-//        $text = $this->escapeMarkdownV2(json_decode($content->negative_prompt, false)->result[0]->choices[0]->message->content)
-
-        $tmp = '**Иван Константинович Айвазовский \(1817–1900\)** \— выдающийся русский художник\-маринист, чьи полотна мастерски передают динамику моря, световые эффекты и драматические бури, сделав его одним из самых узнаваемых мастеров XIX века в изобразительном искусстве\.\[5\]';
+        $text = app(GenApiService::class)->perplexityRequest();
+//        $content = Prompt::where('systemname', 'main')->firstOrFail();
+////        $text = $this->escapeMarkdownV2(json_decode($content->negative_prompt, false)->result[0]->choices[0]->message->content)
+//
+//        $tmp = '**Иван Константинович Айвазовский \(1817–1900\)** \— выдающийся русский художник\-маринист, чьи полотна мастерски передают динамику моря, световые эффекты и драматические бури, сделав его одним из самых узнаваемых мастеров XIX века в изобразительном искусстве\.\[5\]';
 
         Request::sendMessage([
             'chat_id' => $chat_id,
-            'text' => $this->escapeMarkdownV2(json_decode($content->negative_prompt, false)->result[0]->choices[0]->message->content),
-//            'text' => $tmp,
+//            'text' => $this->escapeMarkdownV2(json_decode($content->negative_prompt, false)->result[0]->choices[0]->message->content),
+            'text' => $text,
             'parse_mode' => 'MarkdownV2'
         ]);
 
@@ -49,11 +49,5 @@ class AdditionalCommand extends UserCommand
         ]);
     }
 
-    public function escapeMarkdownV2(string $text): string
-    {
-        $specialChars = ['_', '[', ']', '(', ')', '~', '`', '>', '+', '-', '=', '|', '{', '}', '.', '!', '#'];
-        $text = str_replace(array('**', '##', '# '), array('*', '#', '#'), $text);
-        $escapedChars = array_map(fn($char) => '\\' . $char, $specialChars);
-        return str_replace($specialChars, $escapedChars, $text);
-    }
+
 }
