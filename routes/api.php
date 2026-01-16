@@ -17,5 +17,4 @@ if (app()->environment('local')) {
         ->middleware('moonshine.basic');
 }
 
-Route::middleware('auth:sanctum')
-    ->get('/texts', [TextController::class, 'index']);
+Route::get('/texts', [TextController::class, 'index']);
