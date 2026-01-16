@@ -11,6 +11,7 @@ use MoonShine\Contracts\ColorManager\PaletteContract;
 use MoonShine\Laravel\Layouts\AppLayout;
 use MoonShine\MenuManager\MenuItem;
 use Override;
+use App\MoonShine\Resources\TelegramUser\TelegramUserResource;
 
 final class MoonShineLayout extends AppLayout
 {
@@ -32,8 +33,9 @@ final class MoonShineLayout extends AppLayout
     {
         return [
             ...parent::menu(),
-            MenuItem::make(UserResource::class),
-            MenuItem::make(TextResource::class),
+//            MenuItem::make(UserResource::class),
+//            MenuItem::make(TextResource::class),
+            MenuItem::make(TelegramUserResource::class, 'Полтзователи Телеграм'),
         ];
     }
 
