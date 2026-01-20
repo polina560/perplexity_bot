@@ -1,0 +1,15 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Models;
+use Illuminate\Database\Eloquent\Model;
+
+class Topic extends Model
+{
+	protected $table =  'Topic';
+
+    protected $fillable = [
+		'topic',
+    ];
+}

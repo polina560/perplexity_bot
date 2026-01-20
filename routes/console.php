@@ -1,6 +1,5 @@
 <?php
 
-use App\Services\GenApiService;
 use App\Services\Telegram\BotService;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
@@ -21,5 +20,5 @@ Artisan::command('send:newPost', function (BotService $botService): void {
     $botService->newPost();
 });
 
-Schedule::command('send:newPost')->daily()->at('12:00');
+//Schedule::command('send:newPost')->daily()->at('12:00');
 //Schedule::command('send:newPost')->everyMinute();

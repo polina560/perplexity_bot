@@ -2,9 +2,9 @@
     "_comment": "php artisan moonshine:build test.json",
     "resources": [
         {
-            "name": "Prompt",
-            "menuName": "Промпты",
-            "table": "prompt",
+            "name": "Topic",
+            "menuName": "Тема",
+            "table": "Topic",
             "timestamps": true,
 
             "withMigration": true,
@@ -18,18 +18,8 @@
                     "methods": ["sortable"]
                 },
                 {
-                    "column": "systemname",
+                    "column": "topic",
                     "type": "string",
-                    "nullable": true
-                },
-                {
-                    "column": "prompt",
-                    "type": "text",
-                    "nullable": true
-                },
-                {
-                    "column": "negative_prompt",
-                    "type": "text",
                     "nullable": true
                 }
 

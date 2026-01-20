@@ -42,7 +42,8 @@ class BotService
     public function newPost()
     {
         $text = app(GenApiService::class)->perplexityRequest();
-        TelegramUser::each(function (TelegramUser $telegramUser) use ($text){
+        //        $text = 'hello';
+        TelegramUser::each(function (TelegramUser $telegramUser) use ($text) {
             Request::sendMessage([
                 'chat_id' => $telegramUser->chat_id,
                 'text' => $text,

@@ -3,12 +3,11 @@
 namespace App\Services;
 
 use App\Models\Prompt;
-use App\Models\TelegramUser;
+use App\Models\Topic;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 use JsonException;
-use Longman\TelegramBot\Request;
 
 class GenApiService
 {
@@ -19,12 +18,24 @@ class GenApiService
     public function perplexityRequest()
     {
         $content = Prompt::where('systemname', 'main')->firstOrFail();
+        $topics = Topic::all();
+        $str = '';
+        foreach ($topics as $topic) {
+            $str .= $topic->topic.', ';
+        }
+
         $response = Http::withToken(Config::string('genapi.api_key'))
             ->post(Config::string('genapi.perplexity_url'), [
                 'messages' => [
                     [
                         'role' => 'user',
-                        'content' => 'Напиши небольшое исследование-обзор какого-либо деятеля, произведения или события из сферы искусства. Опирайся только на подтвержденные источники, сделай обзор довольно полным и интересным. Приведи примеры статей, работ и исследований, посвященных этой теме, а также обязательно приведи визуальные примеры по данной теме (это могут быть файлы изображений, ссылки и т.п.)',
+                        'content' => $content->prompt,
+                    ],
+                    [
+                        'role' => 'system',
+                        'content' => 'Не используй как основные следующие темы (можно: упоминать их косвенно, описывать
+                            в другом ключе, с другими параметрами; например, можно использовать автора из списка
+                            как основного, но рассказ должен быть про другие аспекты с ним связанные): '.$str,
                     ],
                 ],
                 //                'max_tokens' => 1550,
@@ -52,8 +63,10 @@ class GenApiService
             $attempt++;
         } while ($text->json('status') === 'processing' && $attempt < 120);
 
-        $content->negative_prompt = json_encode($text->json(), JSON_THROW_ON_ERROR);
-        $content->save();
+
+        $title = explode("\n", json_decode(json_encode($text->json(), JSON_THROW_ON_ERROR), false, 512, JSON_THROW_ON_ERROR)->result[0]->choices[0]->message->content, 2);
+        $title = str_replace(['#', '##'], ['', ''], $title[0]);
+        Topic::create(['topic' => $title]);
 
         return $this->escapeMarkdownV2(json_decode(json_encode($text->json(), JSON_THROW_ON_ERROR), false, 512, JSON_THROW_ON_ERROR)->result[0]->choices[0]->message->content
         );
